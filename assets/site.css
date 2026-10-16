@@ -476,3 +476,33 @@ a.g-card:hover{border-color:var(--laser);background:var(--ink2)}
 .legal .back{display:inline-block;margin-bottom:30px}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* ===== Review-Runde: Feinschliff ===== */
+/* Header bleibt auch über hellen Flächen (Logbuch) satt dunkel statt grau */
+.top.solid{background:rgba(12,13,15,.9)}
+/* Werkschau: Block passt auch auf 900 px hohe Bildschirme komplett ins Bild; Zähler am Maßband */
+.works-pin{padding:84px 0 26px}
+.wk{height:min(52vh,560px)}
+.track-wrap{position:relative}
+.tape-ruler{margin-top:20px}
+.tr-n{position:absolute;left:calc(50% + 12px);bottom:3px;font-size:11px;color:var(--mute);letter-spacing:.1em;white-space:nowrap}
+.tr-n b{color:var(--paper);font-weight:500}
+@media (max-width:860px){.wk{height:62vw;max-height:420px}.tape-ruler{margin-top:22px}}
+/* Logbuch: große Konturziffern, die beim Überfahren laserrot werden */
+.log-list{counter-reset:lg}
+.log-list li{transition:background .4s var(--ease)}
+.log-list li::before{content:counter(lg,decimal-leading-zero);position:absolute;right:22px;top:20px;font:800 clamp(40px,4.6vw,68px)/1 var(--disp);letter-spacing:-.05em;color:transparent;-webkit-text-stroke:1px rgba(23,24,27,.2);transition:color .45s var(--ease),-webkit-text-stroke-color .45s,transform .6s var(--ease);pointer-events:none}
+.log-list li:hover{background:rgba(255,255,255,.28)}
+.log-list li:hover::before{color:var(--laser);-webkit-text-stroke-color:var(--laser);transform:translateY(-4px)}
+.log-list li p{position:relative}
+@media (max-width:600px){.log-list li::before{right:0;top:22px;font-size:40px}}
+/* Gruppe: Laser-Unterstrich beim Überfahren */
+.g-card{position:relative;overflow:hidden}
+a.g-card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--laser);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+a.g-card:hover::after{transform:none}
+/* Footer: Schlusswort füllt sich beim Scrollen wie das Maß-Wort */
+.foot-big.fill{color:transparent;background:linear-gradient(90deg,var(--paper) var(--ff,0%),#25272c var(--ff,0%));-webkit-background-clip:text;background-clip:text;width:fit-content}
+.foot-big span{display:inline-block}
+.foot-big.fill span{color:transparent;background:linear-gradient(90deg,var(--laser) var(--ff,0%),#25272c var(--ff,0%));-webkit-background-clip:text;background-clip:text}
+/* Hero: Text räumt beim Start der Montage schneller das Feld (weniger Überlagerung mit dem 3D-Modell) */
+.hero:not(.is-start) .hero-copy{transition:opacity .35s var(--ease),transform .5s var(--ease)}

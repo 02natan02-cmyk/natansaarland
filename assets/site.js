@@ -125,19 +125,33 @@
 
   /* ---------- Werkschau: horizontal ---------- */
   const works = $('.works'), pin = $('.works-pin'), track = $('.track'), trackWrap = $('.track-wrap'), trIn = $('.tr-in');
-  let worksH = false, trackMax = 0;
+  const trN = $('.tr-n b'), wkItems = track ? [...track.children] : [];
+  let worksH = false, trackMax = 0, wkCenters = [], wkCur = -1;
+  // Zähler am Maßband: welches Foto steht gerade unter dem roten Strich?
+  function wkCount(viewCenter) {
+    if (!trN || !wkCenters.length) return;
+    let best = 0, d = Infinity;
+    wkCenters.forEach((c, i) => { const x = Math.abs(c - viewCenter); if (x < d) { d = x; best = i; } });
+    if (best === wkCur) return;
+    wkCur = best;
+    const n = wkItems[best] && $('.wk-n', wkItems[best]);
+    trN.textContent = n ? n.textContent : 'K-' + String(best + 1).padStart(2, '0');
+  }
   function layoutWorks() {
     if (!works) return;
     worksH = innerWidth > 860 && !reduce;
+    wkCenters = wkItems.map(li => li.offsetLeft + li.offsetWidth / 2);
+    wkCur = -1;
     if (worksH) {
       trackMax = Math.max(0, track.scrollWidth - innerWidth);
       works.style.height = (pin.offsetHeight + trackMax) + 'px';
-    } else { works.style.height = ''; track.style.transform = ''; }
+    } else { works.style.height = ''; track.style.transform = ''; wkCount(trackWrap.scrollLeft + trackWrap.clientWidth / 2); }
   }
   if (trackWrap) trackWrap.addEventListener('scroll', () => {
     if (worksH) return;
     const m = trackWrap.scrollWidth - trackWrap.clientWidth;
     if (trIn) trIn.style.transform = `translateX(${-(m ? trackWrap.scrollLeft / m : 0) * 60}%)`;
+    wkCount(trackWrap.scrollLeft + trackWrap.clientWidth / 2);
   }, { passive: true });
 
   /* ---------- Lightbox ---------- */
@@ -206,6 +220,8 @@
   /* ---------- Scroll-Loop ---------- */
   const dock = $('.dock'), anfrage = $('#anfrage'), flow = $('.flow'), flowLis = $$('.flow li');
   const life = $('[data-lifetape]'), lifeMarks = $$('.lt-marks li');
+  const footBig = $('.foot-big');
+  if (footBig && !reduce) footBig.classList.add('fill');
   function prog(el, a = 1, b = 0) { // 0 wenn Oberkante bei a*vh, 1 wenn Unterkante bei b*vh
     const r = el.getBoundingClientRect(), vh = innerHeight;
     return clamp((vh * a - r.top) / (r.height + vh * (a - b)));
@@ -243,6 +259,12 @@
       const p = range > 0 ? clamp(-r.top / range) : 0;
       track.style.transform = `translate3d(${(-p * trackMax).toFixed(1)}px,0,0)`;
       if (trIn) trIn.style.transform = `translateX(${(-p * 60).toFixed(2)}%)`;
+      wkCount(p * trackMax + innerWidth / 2);
+    }
+    // Footer: „Auf den Millimeter." füllt sich wie das Maß-Wort oben
+    if (footBig && !reduce) {
+      const p = prog(footBig, .98, .8);
+      footBig.style.setProperty('--ff', (p * 106).toFixed(1) + '%');
     }
     // Ablauf
     if (flow) {
