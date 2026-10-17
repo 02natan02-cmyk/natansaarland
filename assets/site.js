@@ -200,13 +200,50 @@
       const n = tabs[(i + 1) % tabs.length]; setTab(n.dataset.tab); n.focus();
     });
   });
-  $$('.file input').forEach(inp => inp.addEventListener('change', () => {
-    const n = inp.parentElement.querySelector('.file-n');
-    n.textContent = inp.files && inp.files[0] ? inp.files[0].name : 'optional · Bild oder PDF';
+  /* Datei-Anhang: FormSubmit nimmt höchstens 10 MB an. Große Handyfotos werden vorher im Browser verkleinert,
+     zu große Dateien freundlich abgelehnt – sonst landet der Besucher auf einer Fehlerseite und die Anfrage ist weg. */
+  const MAX_FILE = 9.5 * 1024 * 1024, SHRINK_FROM = 2.5 * 1024 * 1024;
+  const fileNote = (inp, txt, err) => { const n = inp.parentElement.querySelector('.file-n'); n.textContent = txt; inp.parentElement.classList.toggle('err', !!err); };
+  async function shrink(file) {
+    if (!/^image\/(jpeg|png|webp|heic|heif)$/i.test(file.type) || file.size < SHRINK_FROM || typeof createImageBitmap !== 'function' || typeof DataTransfer !== 'function') return file;
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const k = Math.min(1, 2400 / Math.max(bmp.width, bmp.height));
+      const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); bmp.close && bmp.close();
+      const blob = await new Promise(res => c.toBlob(res, 'image/jpeg', .86));
+      if (!blob || blob.size >= file.size) return file;
+      return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg', lastModified: Date.now() });
+    } catch (e) { return file; }
+  }
+  $$('.file input').forEach(inp => inp.addEventListener('change', async () => {
+    const f = inp.files && inp.files[0];
+    if (!f) { fileNote(inp, 'optional · Bild oder PDF'); return; }
+    fileNote(inp, 'wird vorbereitet …');
+    const g = await shrink(f);
+    if (g !== f) { const dt = new DataTransfer(); dt.items.add(g); inp.files = dt.files; }
+    if (g.size > MAX_FILE) { inp.value = ''; fileNote(inp, 'Datei zu groß (max. 10 MB) – bitte ein kleineres Foto wählen oder per WhatsApp schicken.', true); return; }
+    fileNote(inp, g.name + ' · ' + (g.size / 1048576).toFixed(1).replace('.', ',') + ' MB');
   }));
-  if (form) form.addEventListener('submit', () => {
-    const b = $('.btn-send span', form); if (b) b.textContent = 'Wird gesendet …';
+
+  /* Herkunft der Anfrage (z. B. Google-Anzeige) – ohne Cookies, nichts wird gespeichert.
+     Wird nur mitgeschickt, wenn jemand die Anfrage absendet. Beim Laden merken: Ankerlinks schreiben die Adresse um. */
+  if (form) {
+    const qs = new URLSearchParams(location.search), src = [];
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(k => { const v = qs.get(k); if (v) src.push(k.slice(4) + ': ' + v.slice(0, 80)); });
+    if (qs.has('gclid') || qs.has('gbraid') || qs.has('wbraid')) src.push('Google-Anzeige');
+    if (qs.has('fbclid')) src.push('Facebook/Instagram-Link');
+    try { const r = document.referrer && new URL(document.referrer); if (r && r.host !== location.host) src.push('kam von: ' + r.host.replace(/^www\./, '')); } catch (e) { }
+    if (src.length) { const h = document.createElement('input'); h.type = 'hidden'; h.name = 'Herkunft'; h.value = src.join(' · '); form.appendChild(h); }
+  }
+  if (form) form.addEventListener('submit', e => {
+    const big = $$('.fs:not([disabled]) .file input', form).some(i => i.files && i.files[0] && i.files[0].size > MAX_FILE);
+    if (big) { e.preventDefault(); return; }
+    const btn = $('.btn-send', form), b = $('span', btn); if (b) b.textContent = 'Wird gesendet …';
+    setTimeout(() => { btn.disabled = true; }, 0); // doppeltes Absenden verhindern
   });
+  // Zurück-Taste (Seite aus dem Zwischenspeicher): Knopf wieder freigeben
+  addEventListener('pageshow', e => { if (e.persisted && form) { const btn = $('.btn-send', form); btn.disabled = false; $('span', btn).textContent = 'Anfrage senden'; } });
 
   /* ---------- Danke ---------- */
   const th = $('#danke-box');

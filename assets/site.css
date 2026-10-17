@@ -399,6 +399,9 @@ ol,ul{padding:0;list-style:none}
 .file-b{font-weight:600}
 .file-b::before{content:"+";display:inline-grid;place-items:center;width:28px;height:28px;background:var(--laser);color:#fff;margin-right:12px;font-weight:400}
 .file-n{color:var(--mute);font-size:11px}
+.file.err{border-color:var(--laser)}
+.file.err .file-n{color:var(--laser);font-size:12px}
+.btn-send:disabled{opacity:.7;cursor:progress}
 .consent{display:flex;gap:12px;align-items:flex-start;font-size:14px;color:var(--mute);cursor:pointer}
 .consent input{appearance:none;-webkit-appearance:none;flex:none;width:22px;height:22px;border:1px solid var(--line2);margin:1px 0 0;background:var(--ink);cursor:pointer;display:grid;place-items:center}
 .consent input:checked{background:var(--laser);border-color:var(--laser)}
