@@ -23,7 +23,7 @@
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="preload" href="fonts/unbounded-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/outfit-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/site.css?v=3">
+<link rel="stylesheet" href="assets/site.css?v=4">
 <script type="importmap">{"imports":{"three":"./js/three.module.min.js"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"HomeAndConstructionBusiness","@id":"https://natan.saarland/#business","name":"Natan Küchenmontage","legalName":"Natan Wojtasczyk Montage & Vertrieb","description":"Premium-Küchenmontage im Saarland für schwierige Räume und Präzisionsarbeit sowie Beratung und Vermittlung beim Küchenkauf an passende Küchenstudios im Saarland.","url":"https://natan.saarland/","email":"info@natan.saarland","telephone":"+49 151 56743442","image":"https://natan.saarland/img/og.jpg","logo":"https://natan.saarland/img/apple-touch-icon.png","address":{"@type":"PostalAddress","streetAddress":"Römerstraße 25","postalCode":"66125","addressLocality":"Saarbrücken","addressRegion":"Saarland","addressCountry":"DE"},"areaServed":{"@type":"State","name":"Saarland"},"founder":{"@id":"https://natan.saarland/#natan"},"sameAs":["https://www.instagram.com/saarland.kuechen.natan/"],"knowsAbout":["Küchenmontage","Küchenmonteur","Einbauküchen","Arbeitsplatten-Ausschnitte","Küchenberatung","Küche kaufen im Saarland"],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Leistungen","itemListElement":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Premium-Küchenmontage","areaServed":"Saarland"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Küchenberatung und Vermittlung an Küchenstudios im Saarland","areaServed":"Saarland"}}]}},{"@type":"Person","@id":"https://natan.saarland/#natan","name":"Natan Wojtasczyk","jobTitle":"Küchenmonteur und Inhaber","worksFor":{"@id":"https://natan.saarland/#business"},"sameAs":["https://natanholding.de/","https://falcon-eye.de/"]},{"@type":"WebSite","@id":"https://natan.saarland/#web","url":"https://natan.saarland/","name":"Natan Küchenmontage","inLanguage":"de-DE"}]}</script>
 </head>
@@ -401,9 +401,16 @@
         <label class="f"><span>Notiz zum Raum</span><textarea name="Raum_Notiz" rows="3" placeholder="z. B. ca. 4 × 3,5 m, Fenster links, offene Küche zum Wohnzimmer …"></textarea></label>
       </fieldset>
 
-      <label class="consent"><input type="checkbox" required name="Datenschutz" value="akzeptiert"><span>Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage verwendet werden. Mehr in der <a href="datenschutz.html">Datenschutzerklärung</a>. *</span></label>
+      <div class="chipset"><span class="cl">Wie sind Sie auf mich aufmerksam geworden? (freiwillig)</span>
+        <label class="chip"><input type="radio" name="Aufmerksam_durch" value="Google-Suche"><span>Google-Suche</span></label>
+        <label class="chip"><input type="radio" name="Aufmerksam_durch" value="Google-Anzeige"><span>Google-Anzeige</span></label>
+        <label class="chip"><input type="radio" name="Aufmerksam_durch" value="Instagram / Facebook"><span>Instagram / Facebook</span></label>
+        <label class="chip"><input type="radio" name="Aufmerksam_durch" value="Empfehlung"><span>Empfehlung</span></label>
+        <label class="chip"><input type="radio" name="Aufmerksam_durch" value="Küchenstudio"><span>Küchenstudio</span></label>
+        <label class="chip"><input type="radio" name="Aufmerksam_durch" value="Sonstiges"><span>Sonstiges</span></label>
+      </div>
       <button class="btn btn-send" type="submit"><span>Anfrage senden</span><i aria-hidden="true"></i></button>
-      <p class="mono form-note">Pflichtfelder sind mit * markiert. Kein Newsletter, keine Weitergabe an Dritte ohne Ihr Okay.</p>
+      <p class="mono form-note">Pflichtfelder sind mit * markiert – ohne sie kann ich Ihre Anfrage nicht bearbeiten. Ihre Angaben nutze ich nur für Ihre Anfrage, mehr in der <a href="datenschutz.html">Datenschutzerklärung</a>. Kein Newsletter, keine Weitergabe ohne Ihr Okay.</p>
     </form>
   </div>
 </section>
@@ -459,7 +466,7 @@
 <script src="js/lenis.min.js" defer></script>
 <script src="js/gsap.min.js" defer></script>
 <script src="js/ScrollTrigger.min.js" defer></script>
-<script src="assets/site.js?v=3" defer></script>
+<script src="assets/site.js?v=4" defer></script>
 <script type="module" src="assets/montage3d.js?v=1"></script>
 </body>
 </html>

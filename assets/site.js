@@ -226,16 +226,6 @@
     fileNote(inp, g.name + ' · ' + (g.size / 1048576).toFixed(1).replace('.', ',') + ' MB');
   }));
 
-  /* Herkunft der Anfrage (z. B. Google-Anzeige) – ohne Cookies, nichts wird gespeichert.
-     Wird nur mitgeschickt, wenn jemand die Anfrage absendet. Beim Laden merken: Ankerlinks schreiben die Adresse um. */
-  if (form) {
-    const qs = new URLSearchParams(location.search), src = [];
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(k => { const v = qs.get(k); if (v) src.push(k.slice(4) + ': ' + v.slice(0, 80)); });
-    if (qs.has('gclid') || qs.has('gbraid') || qs.has('wbraid')) src.push('Google-Anzeige');
-    if (qs.has('fbclid')) src.push('Facebook/Instagram-Link');
-    try { const r = document.referrer && new URL(document.referrer); if (r && r.host !== location.host) src.push('kam von: ' + r.host.replace(/^www\./, '')); } catch (e) { }
-    if (src.length) { const h = document.createElement('input'); h.type = 'hidden'; h.name = 'Herkunft'; h.value = src.join(' · '); form.appendChild(h); }
-  }
   if (form) form.addEventListener('submit', e => {
     const big = $$('.fs:not([disabled]) .file input', form).some(i => i.files && i.files[0] && i.files[0].size > MAX_FILE);
     if (big) { e.preventDefault(); return; }
